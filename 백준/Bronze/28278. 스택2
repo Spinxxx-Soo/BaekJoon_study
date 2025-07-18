@@ -1,0 +1,56 @@
+import java.io.BufferedReader; ///빠른 입출력을 위함
+import java.io.InputStreamReader; /// 입출력에서 사용
+import java.io.IOException; ///?
+import java.util.Deque;
+import java.util.ArrayDeque;
+import java.util.StringTokenizer; /// 파이썬의 split()
+
+public class Main{
+    public static void main(String[] args) throws IOException{
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringBuilder sb = new StringBuilder(); // 출력 결과를 한 번에 모아서 출력
+        
+        // 명령 갯수 읽기
+        int n = Integer.parseInt(br.readLine());
+        
+        //스택 구현 Deque 인터 페이스 + ArrayDeque 클래스
+        Deque<Integer> stack = new ArrayDeque<>();
+        
+        //명령 처리
+        for(int i = 0; i < n; i++){
+            StringTokenizer st = new StringTokenizer(br.readLine(), " "); // 공백기준 분리
+            int cmd = Integer.parseInt(st.nextToken()); // 분리한 토큰을 하나씩 int로 변환
+            
+            switch(cmd){
+                case 1:
+                    int x = Integer.parseInt(st.nextToken()); //token[1] 을 불러오는 코드
+                    stack.push(x);
+                    break;
+                case 2:
+                    if (stack.isEmpty()) {
+                        sb.append(-1).append('\n'); // sb >> 출력 한 번에 몹는 것..
+                    }
+                    else {
+                        sb.append(stack.pop()).append('\n');
+                    }
+                    break;
+                case 3:
+                    sb.append(stack.size()).append('\n');
+                    break;
+                case 4: //삼항 연산자(? 1:0) >> 조건이 ture면 1 아니면 0 와 메서드 체이닝
+                    sb.append(stack.isEmpty() ? 1:0).append('\n');
+                    break;
+                case 5:
+                    if (stack.isEmpty()) { //비어있으면 true
+                        sb.append(-1).append('\n');
+                    }
+                    else {
+                        sb.append(stack.peek()).append('\n');
+                    }
+                    break;
+            }
+            
+        }
+        System.out.print(sb);
+    }
+}
