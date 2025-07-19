@@ -27,8 +27,8 @@ for test_case in range(1, T+1):
             a = arr[j][i]  # 행변경, 열고정
             arr270[i].append(a)
     arr270 = arr270[::-1]
-    
-    print(f"#{test_case}", end ='\n')
+
+    print(f"#{test_case}")
     for i in range(N):
         print(''.join(map(str,arr90[i])), end=' ')
         print(''.join(map(str,arr180[i])), end=' ')
