@@ -1,102 +1,95 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.PriorityQueue;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 public class Solution {
 
-	private static int[][] map;
 	private static int N;
+	private static int[][] map;
+	private static boolean[][] visited;
 	
 	static int[] ar = {-1,0,1,0};
 	static int[] ac = {0,1,0,-1};
+	
 	private static int min;
 	private static int[][] cost;
 	
-	static class Pos{
-		int r,c,w;
-
-		public Pos(int r, int c, int w) {
-			super();
+	static class Pos implements Comparable<Pos>{
+		int r, c, l; //좌표, 길이
+		
+		public Pos(int r, int c, int l) {
 			this.r = r;
 			this.c = c;
-			this.w = w;
+			this.l = l;
+		}
+
+		@Override
+		public int compareTo(Pos o) {
+			return this.l-o.l; //오름차순
 		}
 		
-	}
+	}//ed Pos
 
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	public static void main(String[] args) throws Exception {
+		//BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("res/보급로")));
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st;
 		
-		st = new StringTokenizer(br.readLine());
-		int T = Integer.parseInt(st.nextToken());
-		
-		for(int tc=1; tc<=T; tc++) {
-			st = new StringTokenizer(br.readLine());
-			N = Integer.parseInt(st.nextToken());
+		int T = Integer.parseInt(br.readLine());
+		for(int tc = 1; tc<=T; tc++) {
+			N = Integer.parseInt(br.readLine());
 			
-			map = new int[N][N];
+			map  = new int[N][N];//자리 그리기
+			visited = new boolean[N][N]; //방문 배열
 			
 			for(int i=0; i<N; i++) {
 				String line = br.readLine();
 				for(int j=0; j<N; j++) {
 					map[i][j] = line.charAt(j) - '0';
 				}
-			 }//end 입력
+			}//ed input
+		
+			moving();
 			
-			cost = new int[N][N];//최소값 넣기
-			
-			for(int i=0; i<N; i++) {
-				Arrays.fill(cost[i], Integer.MAX_VALUE/1000);
-			}
-			
-			
-			bfs(0,0);
-
 			System.out.println("#"+tc+" "+cost[N-1][N-1]);
 			
-		}//end tc
+		}//ed tc
 
 	}//ed main
 
-	private static void bfs(int r, int c) {
-		PriorityQueue<Pos> pq  = new PriorityQueue<>(new Comparator<Pos>() {
-			@Override
-			public int compare(Pos o1, Pos o2) {
-				return Integer.compare(o1.w, o2.w);
-			}
-		});
+	private static void moving() { //현재 좌표, 깊이
 		
-		pq.offer(new Pos(r,c,map[r][c]));
-		cost[r][c] = map[r][c];
+		cost = new int[N][N];
+		for(int i=0; i<N; i++) Arrays.fill(cost[i], Integer.MAX_VALUE-1000);
+		
+		cost[0][0] = map[0][0];
+		
+		PriorityQueue<Pos> pq = new PriorityQueue<>();
+		pq.add(new Pos(0,0,cost[0][0])); //출발지 넣기
 		
 		while(!pq.isEmpty()) {
 			Pos cur = pq.poll();
 			
-			if(cur.r == N-1 && cur.c == N-1) return;
+			if(cur.l > cost[cur.r][cur.c]) continue;
+			if(cur.r == (N-1) && cur.c == (N-1)) return;
 			
 			for(int i=0; i<4; i++) {
 				int nr = cur.r + ar[i];
 				int nc = cur.c + ac[i];
 				
-				if(nc<0 || nc>=N || nr<0 || nr>=N) continue;
-				if(cost[nr][nc]> map[nr][nc]+cost[cur.r][cur.c]) {
-					cost[nr][nc] = map[nr][nc] + cost[cur.r][cur.c];
-					pq.offer(new Pos(nr,nc,cost[nr][nc]));
+				if(nr<0||nr>=N || nc<0||nc>=N) continue;
+			
+				int ncost = cur.l + map[nr][nc];
+				if(ncost < cost[nr][nc]) {
+					cost[nr][nc] = ncost;
+					pq.add(new Pos(nr,nc,ncost));
 				}
 				
-			}
-			
+				
+				
+			}//ed 사방탐색
 			
 		}//ed while
 		
-		
-		
-		
-	}//end bfs
+	}
 
 }
